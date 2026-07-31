@@ -75,6 +75,8 @@ body {
 }
 
 .curved-navbar .nav-item a {
+    position: relative;
+    display: inline-block;
     text-decoration: none;
     color: #000;
     font-size: 1.4rem;
@@ -82,8 +84,21 @@ body {
     font-style: normal;
 }
 
-.curved-navbar .nav-item a:hover {
-    font-style: italic;
+.curved-navbar .nav-item a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.1rem;
+    width: 100%;
+    height: 1px;
+    background-color: var(--line-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.curved-navbar .nav-item a:hover::after {
+    transform: scaleX(1);
 }
 
 .curved-navbar .nav-item a.nav-label-ghost {
@@ -192,6 +207,28 @@ body {
     color: var(--highlight);
     font-style: italic;
     text-decoration: none;
+}
+
+.page-footer-cta .highlight {
+    position: relative;
+    display: inline-block;
+}
+
+.page-footer-cta .highlight::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.02rem;
+    width: 100%;
+    height: 1px;
+    background-color: var(--highlight);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.page-footer:not(.page-footer-static) .page-footer-cta .highlight:hover::after {
+    transform: scaleX(1);
 }
 
 /* Quick Facts Section */
@@ -403,6 +440,8 @@ body {
 }
 
 .work-exp-company {
+    position: relative;
+    display: inline-block;
     font-family: "Inter", sans-serif;
     font-style: italic;
     font-weight: 400;
@@ -410,8 +449,21 @@ body {
     text-decoration: none;
 }
 
-.work-exp-company:hover {
-    text-decoration: underline;
+.work-exp-company::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.1rem;
+    width: 100%;
+    height: 1px;
+    background-color: var(--line-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.work-exp-company:hover::after {
+    transform: scaleX(1);
 }
 
 .work-exp-logo-link {
@@ -602,6 +654,28 @@ body {
     color: #000;
     font-family: "Inter", sans-serif;
     font-size: 1.1rem;
+}
+
+.page-footer-link span {
+    position: relative;
+    display: inline-block;
+}
+
+.page-footer-link span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.1rem;
+    width: 100%;
+    height: 1px;
+    background-color: var(--line-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.page-footer:not(.page-footer-static) .page-footer-link:hover span::after {
+    transform: scaleX(1);
 }
 
 .page-footer-link i {
