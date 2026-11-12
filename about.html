@@ -53,7 +53,7 @@
             <div class="about-header-left">
                 <h1>Still curious?</h1>
                 <p>Here's a little <a href="more.html" class="about-more-link">more</a> about me.</p>
-                <p class="about-last-updated">Last updated: October 2026</p>
+                <p class="about-last-updated">Last updated: November 2026</p>
             </div>
             <div class="about-header-right">
                 <div class="about-header-right-inner">
@@ -342,7 +342,7 @@
                     const sl = wrapper.scrollLeft;
                     let activeIndex = 0;
                     for (let j = 0; j < items.length - 1; j++) {
-                        if (items[j].offsetLeft <= sl && items[j + 1].offsetLeft > sl) {
+                        if (items[j].offsetLeft <= sl + 2 && items[j + 1].offsetLeft > sl + 2) {
                             activeIndex = j % N;
                             break;
                         }
@@ -350,7 +350,6 @@
                     setActive(activeIndex);
                 }, { passive: true });
 
-                wrapper.addEventListener('scrollend', () => { scrollingTo = false; }, { passive: true });
 
                 let isDragging = false, startX = 0, startScrollLeft = 0;
                 wrapper.addEventListener('mousedown', (e) => {
@@ -381,12 +380,38 @@
                         if (!setWidth) return;
                         scrollingTo = true;
                         clearTimeout(scrollingToTimer);
-                        scrollingToTimer = setTimeout(() => { scrollingTo = false; }, 1500);
+                        scrollingToTimer = setTimeout(() => { scrollingTo = false; }, 2000);
                         const index = parseInt(loc.dataset.index);
                         setActive(index);
-                        wrapper.scrollTo({ left: items[N + index].offsetLeft, behavior: 'smooth' });
+                        animateScrollTo(items[N + index].offsetLeft);
                     });
                 });
+
+                // Slow, eased scroll (duration scales with distance)
+                let animFrame = null;
+                function animateScrollTo(target) {
+                    cancelAnimationFrame(animFrame);
+                    const start = wrapper.scrollLeft;
+                    const dist = target - start;
+                    if (Math.abs(dist) < 1) { scrollingTo = false; return; }
+                    const duration = Math.min(1400, Math.max(600, Math.abs(dist) * 0.6));
+                    const t0 = performance.now();
+                    const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                    function step(now) {
+                        const p = Math.min(1, (now - t0) / duration);
+                        wrapper.scrollLeft = start + dist * ease(p);
+                        if (p < 1) animFrame = requestAnimationFrame(step);
+                        else {
+                            // keep the clicked caption selected; release the lock after the final scroll event
+                            clearTimeout(scrollingToTimer);
+                            scrollingToTimer = setTimeout(() => { scrollingTo = false; }, 100);
+                        }
+                    }
+                    animFrame = requestAnimationFrame(step);
+                }
+                // Let the user interrupt the animation by dragging/touching
+                ['mousedown', 'touchstart', 'wheel'].forEach((evt) =>
+                    wrapper.addEventListener(evt, () => { cancelAnimationFrame(animFrame); scrollingTo = false; }, { passive: true }));
 
                 // Wait for first N images to have dimensions before measuring offsetLeft
                 const firstImgs = Array.from(strip.querySelectorAll('img')).slice(0, N);

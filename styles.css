@@ -781,6 +781,25 @@ a.footnote-item-link {
 
 .footnote-item-name {
     font-style: normal;
+    position: relative;
+    display: inline-block;
+}
+
+.footnote-item-name::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--line-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+a.footnote-item-link:hover .footnote-item-name::after {
+    transform: scaleX(1);
 }
 
 .footnote-num {
